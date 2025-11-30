@@ -1,4 +1,5 @@
-// script.js - 最終統合版 (2025/11/30)
+// script.js - 最終完全統合版 (2025/12/01)
+// 修正点：鍵長3に固定、ツール再利用可能、ヒント3削除、ヒント内容最適化、アコーディオンUI追加
 
 // ===================================
 // 1. グローバル変数とDOM要素の定義
@@ -16,7 +17,8 @@ let collectedData = {
     survey: {},
     hint1Used: false,
     hint2Used: false,
-    toolUsed: false   // どちらかのツールを使ったらtrue
+    // 【修正：hint3Usedを削除】
+    toolUsed: false     // 頻度分析ツールを使ったらtrue
 };
 
 // HTML要素の取得
@@ -31,10 +33,12 @@ const ciphertextDisplay = document.getElementById('ciphertext-display');
 const messageArea = document.getElementById('message-area');
 const hintButton1 = document.getElementById('hint-button-1');
 const hintButton2 = document.getElementById('hint-button-2');
-const frequencyToolButton = document.getElementById('frequency-tool-button'); // 修正
-const decryptionToolButton = document.getElementById('decryption-tool-button'); // 修正
+// 【修正：hintButton3を削除】
+const frequencyToolButton = document.getElementById('frequency-tool-button');
+const decryptionToolButton = document.getElementById('decryption-tool-button');
 const hintDisplay1 = document.getElementById('hint-display-1');
 const hintDisplay2 = document.getElementById('hint-display-2');
+// 【修正：hintDisplay3を削除】
 const keyInput = document.getElementById('key-input');
 const plaintextInput = document.getElementById('plaintext-input');
 
@@ -44,7 +48,7 @@ const plaintextInput = document.getElementById('plaintext-input');
 // ===================================
 
 function startExperiment() {
-    document.getElementById('start-button').style.display = 'none';
+    document.getElementById('start-screen').style.display = 'none'; // start-screenを非表示
     decryptionInterface.style.display = 'block';
     experimentScreen.style.display = 'block';
 
@@ -52,7 +56,7 @@ function startExperiment() {
     ciphertextDisplay.textContent = currentCiphertext;
 
     startTime = Date.now();
-    console.log("実験開始。正解の鍵:", currentCorrectAnswer.key); // デバッグ用
+    //console.log("実験開始。正解の鍵:", currentCorrectAnswer.key); // デバッグ用
 }
 
 function finishExperiment(finalStatus) {
@@ -95,14 +99,19 @@ function handleSubmit() {
 // ===================================
 
 const HINT_MESSAGES = {
-    HINT1: "この暗号は**ヴィジュネル暗号**です。解読法をGoogleなどで検索できます。",
-    HINT2: "解読の最初のステップは、**鍵の長さ（周期）**を見つけることです。暗号文の中に、同じアルファベットの組が繰り返し現れる周期を探してください。",
+    // 【修正：ヒント1の内容を「鍵の長さ」に特化】
+    HINT1: "ヴィジュネル暗号の解読の鍵は、まず**「鍵の長さ（周期）」**を特定することです。暗号文全体を一つのシーザー暗号と見なしてはいけません。",
+    // 【修正：ヒント2の内容を具体的な3ステップに】
+    HINT2: `🔑 **解読の3ステップ:**
+1.  **鍵の長さの特定:** 頻度分析ツールのKasiskiヒント（繰り返し間隔の約数）で、鍵の長さの候補を推測してください。
+2.  **鍵文字の特定:** 鍵長で分割された各グループは、単一のシーザー暗号です。ツールで分割したグループの**最も頻出する文字**を、**英語の頻出文字 'E'** に対応していると仮定し、鍵文字を特定します。（例: 山の頂上がCなら、CからEまでの距離が鍵文字を推測するヒントになります）
+3.  **復号:** 特定した鍵を使って復号化ツールで平文を確認してください。`,
     TOOL_FREQ: "✅ 頻度分析ツールが開かれました。別ウィンドウを確認してください。",
     TOOL_DECRYPT: "✅ 復号化ツールが開かれました。別ウィンドウを確認し、特定した鍵を入力してください。"
 };
 
 function showHint1() {
-    hintDisplay1.textContent = HINT_MESSAGES.HINT1;
+    hintDisplay1.innerHTML = HINT_MESSAGES.HINT1.replace(/\n/g, '<br>'); // 改行を反映
     hintDisplay1.style.display = 'block';
     
     collectedData.hint1Used = true;
@@ -111,7 +120,7 @@ function showHint1() {
 }
 
 function showHint2() {
-    hintDisplay2.textContent = HINT_MESSAGES.HINT2;
+    hintDisplay2.innerHTML = HINT_MESSAGES.HINT2.replace(/\n/g, '<br>'); // 改行を反映
     hintDisplay2.style.display = 'block';
     
     collectedData.hint2Used = true;
@@ -122,10 +131,9 @@ function showHint2() {
  * 頻度分析ツールを開き、データに記録する (ツールボタン1)
  */
 function openFrequencyTool() {
-    // 【記録を行う】
     collectedData.toolUsed = true; 
-    frequencyToolButton.disabled = true;
-    
+    // frequencyToolButton.disabled = true; // 削除
+
     const encodedCiphertext = encodeURIComponent(currentCiphertext);
     // frequency_tool.html を開く
     window.open(`frequency_tool.html?text=${encodedCiphertext}`, '_blank', 'width=800,height=600');
@@ -137,11 +145,10 @@ function openFrequencyTool() {
  * 復号化ツールを開く (ツールボタン2)
  */
 function openDecryptionTool() {
-    // 【記録を行わない】
-    decryptionToolButton.disabled = true;
+    // decryptionToolButton.disabled = true; // 削除
 
     const encodedCiphertext = encodeURIComponent(currentCiphertext);
-    // decryption_tool.html を開く
+    // decryption_tool.html を開く (記録はしない)
     window.open(`decryption_tool.html?text=${encodedCiphertext}`, '_blank', 'width=500,height=400');
     
     messageArea.textContent = HINT_MESSAGES.TOOL_DECRYPT;
@@ -190,18 +197,17 @@ function encryptVigenere(plaintext, key) {
 // 5. 実験条件の設定と暗号生成ロジック
 // ===================================
 
-// A. 暗号文の長さの定義 (文字数) - 解読率向上のため長めに設定
+// A. 暗号文の長さの定義 (文字数) 
 const LENGTH_OPTIONS = [500, 750, 1000]; 
 
-// B. 鍵の複雑性の定義 (タイプ) - 鍵長を短く設定
+// B. 鍵の複雑性の定義 (タイプ) - 【修正：鍵の長さを '3' に固定】
 const COMPLEXITY_OPTIONS = [
-    { type: "WORD", minLength: 3, maxLength: 5 }, 
-    { type: "RANDOM", minLength: 3, maxLength: 5 } 
+    { type: "WORD", minLength: 3, maxLength: 3 }, 
+    { type: "RANDOM", minLength: 3, maxLength: 3 } 
 ];
 
 // C. ランダムな平文の元となる文章（十分な長さ: 1200文字以上を推奨）
 const SOURCE_TEXT = "HERTAISAPERSONOFIMMEASURABLEGENIUSANDUNQUESTIONABLEECCENTRICITYWITHINTHEUNIVERSEOFHONKAISTARRAILSHEISHIGHLYREGARDEDASTHEMASTEROFTHESIMULATEDUNIVERSEANDTHELEADERANDTRUEOWNEROFTHETITULARENIGMATICSPACEHERTASTATIONHERTRUEFORMISRARELYSEENASSHESPREFERSTOOPERATEANDINTERACTTHROUGHTELESCOPICALLYCONTROLLEDPUPPETSOFHERYOUNGERSELFADISTINCTIVEQUIRKTHATHIGHLIGHTSHERNATUREASANABSTRACTANDOFTENDETACHEDGENIUSSHEDOESNOTCAREMUCHFORANYTHINGEXCEPTTHINGSANDPHENOMENATHATCAPTUREHERFLEETINGATTENTIONANDCURIOSITYTHISSUPREMEINDIFFERENCEISACENTRALASPECTOFHERCOMPLEXPERSONALITYWHILESHEDISPLAYSSURPRISINGEMOTIONSOCCASIONALLYTHEYAREOFTENFLEETINGANDQUICKLYREVERTTOHERUSUALAPATHETICAIRHERGENIUSSTRETCHESBEYONDCONVENTIONALUNDERSTANDINGEARNINGHERAPLACEAMONGSTTHEILLUSTRIOUSANDINFAMOUSGENIUSOCIETYANORGANIZATIONOFPEOPLEWITHINCOMPARABLEBRAINPOWERANDINNOVATIVESPARKSHERPRIMARYMOTIVATIONINLIFESEEMSTOBEEASEDOWNEVERYTHINGSHETHINKSISSIMPLYBORINGTHISSENTIMENTISARECURRINGTHEMEINHERDIALOGUEANDACTIONSTHISEVERPRESENTDESIRETOALLEVIATEBOREDOMLEDHERTOJOINTHISMYSTERIOUSANDELUSIVEORGANIZATIONINTHESEARCHFORKNOWLEDEGETHATSATISFIESHERECCENTRICCRITERIASHESEESALMOSTEVERYTHINGINTHEDIALECTICOFINTERESTINGORBORINGWITHVERYLITTLEINBETWEENEVENTHESIMULATEDUNIVERSEWHICHISACRITICALGAMEPLAYFEATUREWASCREATEDBYHERTOSERVEASANEWEXPERIENCEANDAWAYTOCAPTUREHERINTERESTFORLONGERPERIODSTHANMOSTSORTIESINTORESEARCHNORMALLYDOTHISHOTELASPECTOFHERCHARACTERADDSAFASCINATINGLAYEROFDEPTHTOHERSCIENTIFICPURSUITSDESPITEHERCOLDANDDETACHEDDEMEANORHERTAISNOTWITHOUTASTRANGEFORMOFCHARISMAANDACLEARWITHERAPPARELISICONICCONSISTINGOFAGOTHICLOLITALIKEDRESSWHICHEMBODIESHERUNUSUALLYYOUTHFULAPPEARANCEDESPITEBEINGOVERA"; 
-// ※ 1200文字程度の自然な文章に置き換えた例。
 
 function generateRandomKey(length) {
     let result = '';
@@ -213,28 +219,22 @@ function generateRandomKey(length) {
 }
 
 function generateWordKey(minLength, maxLength) {
-    const words = ["SCIENCE", "LOGIC", "CIPHER", "EXPERIMENT", "RESEARCH", "STUDY", "DATA", "ANALYSIS", "THEORY", "CODE", "PUZZLE", "SOLVE"];
+    // 鍵長3に固定したため、単語リストを鍵長3のものに限定する
+    const words3 = ["THE", "AND", "FOR", "BUT", "HAS", "CAN", "ARE", "WAS", "YOU", "TRY", "NEW", "KEY", "USE", "BIT", "SIX", "ONE", "TWO", "DAY", "RUN"];
     
-    const validWords = words.filter(word => word.length >= minLength && word.length <= maxLength);
-
-    if (validWords.length === 0) {
-        const length = Math.floor(Math.random() * (maxLength - minLength + 1)) + minLength;
-        return generateRandomKey(length);
-    }
-    
-    return validWords[Math.floor(Math.random() * validWords.length)].toUpperCase();
+    return words3[Math.floor(Math.random() * words3.length)].toUpperCase();
 }
 
 function assignExperimentCondition() {
     const assignedLength = LENGTH_OPTIONS[Math.floor(Math.random() * LENGTH_OPTIONS.length)];
     const assignedComplexity = COMPLEXITY_OPTIONS[Math.floor(Math.random() * COMPLEXITY_OPTIONS.length)];
 
-    const keyLengthRange = assignedComplexity.maxLength - assignedComplexity.minLength + 1;
-    const keyLength = Math.floor(Math.random() * keyLengthRange) + assignedComplexity.minLength;
+    // 鍵長は3で固定される
+    const keyLength = 3; 
 
     let assignedKey;
     if (assignedComplexity.type === "WORD") {
-        assignedKey = generateWordKey(assignedComplexity.minLength, assignedComplexity.maxLength);
+        assignedKey = generateWordKey(keyLength, keyLength); 
     } else {
         assignedKey = generateRandomKey(keyLength).toUpperCase();
     }
@@ -250,7 +250,7 @@ function assignExperimentCondition() {
     collectedData.condition = {
         length: assignedLength,
         complexityType: assignedComplexity.type,
-        keyLength: assignedKey.length
+        keyLength: assignedKey.length 
     };
 }
 
@@ -285,6 +285,7 @@ function sendDataToServer() {
     formData.append('survey', JSON.stringify(collectedData.survey));     
     formData.append('hint1Used', collectedData.hint1Used);
     formData.append('hint2Used', collectedData.hint2Used);
+    // 【修正：hint3Usedを削除】
     formData.append('toolUsed', collectedData.toolUsed);
     
     fetch(GAS_ENDPOINT_URL, {
@@ -311,13 +312,44 @@ submitButton.addEventListener('click', handleSubmit);
 giveupButton.addEventListener('click', () => finishExperiment("GIVE_UP"));
 hintButton1.addEventListener('click', showHint1);
 hintButton2.addEventListener('click', showHint2);
-frequencyToolButton.addEventListener('click', openFrequencyTool); // 修正
-decryptionToolButton.addEventListener('click', openDecryptionTool); // 修正
+frequencyToolButton.addEventListener('click', openFrequencyTool);
+decryptionToolButton.addEventListener('click', openDecryptionTool);
 
 sendDataButton.addEventListener('click', sendDataToServer); 
 
+
 // ===================================
-// 8. 入力整形のリアルタイム処理ロジック
+// 8. アコーディオンUIのロジック
+// ===================================
+
+document.addEventListener('DOMContentLoaded', () => {
+    const accordionButtons = document.querySelectorAll('.accordion-header');
+
+    accordionButtons.forEach(button => {
+        // ルールのアコーディオンはデフォルトで開いておく
+        if (button.id === 'rule-accordion-button') {
+            const content = button.nextElementSibling;
+            content.classList.add('open');
+        }
+
+        button.addEventListener('click', () => {
+            const content = button.nextElementSibling;
+            
+            // max-heightを使って開閉をCSSで制御
+            if (content.classList.contains('open')) {
+                content.classList.remove('open');
+                // content.style.maxHeight = null;
+            } else {
+                content.classList.add('open');
+                // content.style.maxHeight = content.scrollHeight + "px"; // スムーズなアニメーションのためにCSSでmax-heightを設定
+            }
+        });
+    });
+});
+
+
+// ===================================
+// 9. 入力整形のリアルタイム処理ロジック
 // ===================================
 
 keyInput.addEventListener('input', (e) => {
