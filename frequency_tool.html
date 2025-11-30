@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>暗号文 頻度分析・復号化ツール</title>
+    <title>暗号文 頻度分析ツール</title>
     <style>
         body { font-family: sans-serif; padding: 20px; background-color: #f4f7f6; color: #333; }
         main { max-width: 900px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
@@ -14,33 +14,19 @@
         #ciphertext-display { font-size: 1.2em; font-weight: bold; color: #2c3e50; margin: 15px 0; background: #ecf0f1; border: 1px solid #ccc; padding: 15px; border-radius: 5px; word-break: break-all; letter-spacing: 1px; }
         #kasiski-hints ul { list-style-type: disc; padding-left: 20px; }
         #kasiski-hints li { margin-bottom: 5px; }
-        input[type="number"], input[type="text"], button { padding: 8px; border-radius: 4px; border: 1px solid #ccc; }
-        button { background-color: #28a745; color: white; cursor: pointer; border: none; }
-        button:hover { background-color: #1e7e34; }
+        input[type="number"], button { padding: 8px; border-radius: 4px; border: 1px solid #ccc; }
+        button { background-color: #007bff; color: white; cursor: pointer; border: none; }
+        button:hover { background-color: #0056b3; }
     </style>
 </head>
 <body>
 
     <main>
-        <h1>暗号文 頻度分析ツール</h1>
+        <h1>📊 ヴィジュネル暗号 頻度分析ツール</h1>
 
         <h2>対象暗号文:</h2>
         <div id="ciphertext-display">暗号文がありません。メイン画面から開いてください。</div>
         
-        <hr>
-
-        <h2>🔓 復号ツール</h2>
-        <p>🔑 鍵が特定できたら、その鍵を入力して「復号開始」ボタンを押してください。</p>
-        <div>
-            <label for="decryption-key-input">特定した鍵:</label>
-            <input type="text" id="decryption-key-input" style="padding: 5px; width: 150px;" placeholder="例: CIPHER" oninput="this.value = this.value.toUpperCase().replace(/[^A-Z]/g, '')">
-            <button onclick="decryptCiphertext()">復号開始</button>
-        </div>
-        
-        <h3 style="margin-top: 20px;">復号結果（平文）:</h3>
-        <div id="decrypted-plaintext-display" style="border: 1px dashed #007bff; padding: 15px; background: #e6f7ff; min-height: 50px; font-size: 1.1em; word-break: break-all;">
-            </div>
-
         <hr>
 
         <h2>🔑 鍵の長さ推測ヒント (Kasiski)</h2>
@@ -62,7 +48,7 @@
         <p>鍵の長さが分かったら、その長さを入力して分析を開始してください。分割された各グラフの山の頂上（最も高い棒）は、**英語で最も頻出する文字 'E'** の位置を示唆します。**『Eの山』**と**『Aの場所』**の差分が、鍵文字の推測に役立ちます。</p>
         <div>
             <label for="key-length-input">鍵の長さ (数字):</label>
-            <input type="number" id="key-length-input" min="2" max="20" value="5" style="width: 80px; padding: 5px;">
+            <input type="number" id="key-length-input" min="2" max="20" value="3" style="width: 80px; padding: 5px;">
             <button onclick="analyzeByLength()">鍵長で分析開始</button>
         </div>
         
@@ -70,6 +56,6 @@
             </div>
     </main>
 
-    <script src="frequency_tool.js"></script>
+    <script src="frequency_tool_script.js"></script>
 </body>
 </html>
