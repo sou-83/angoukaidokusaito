@@ -1,9 +1,7 @@
-/* style.css */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f4f7f6;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
     color: #333;
-    margin: 0;
     padding: 20px;
 }
 
@@ -12,88 +10,150 @@ main {
     margin: 0 auto;
     background: #fff;
     padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 h1 {
-    color: #0056b3;
-    border-bottom: 3px solid #007bff;
+    color: #007bff;
+    text-align: center;
+    border-bottom: 2px solid #007bff;
     padding-bottom: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 }
 
 h2 {
-    color: #333;
-    margin-top: 30px;
+    color: #555;
+    margin-top: 20px;
+    margin-bottom: 15px;
 }
 
 #ciphertext-display {
-    font-size: 1.6em;
+    font-size: 1.5em;
     font-weight: bold;
     color: #2c3e50;
-    padding: 15px;
     margin: 15px 0;
     background: #ecf0f1;
+    border: 1px solid #ccc;
+    padding: 15px;
     border-radius: 5px;
     word-break: break-all;
-    letter-spacing: 1.5px;
+    letter-spacing: 1px;
+}
+
+/* 解読フォームのスタイル */
+label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
 }
 
 input[type="text"], textarea {
-    width: 100%;
+    width: 98%;
     padding: 10px;
-    margin: 8px 0 20px 0;
+    margin-top: 5px;
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
-    font-size: 1em;
+}
+
+textarea {
+    resize: vertical;
 }
 
 button {
-    background-color: #007bff;
-    color: white;
-    padding: 12px 20px;
+    padding: 10px 15px;
     border: none;
-    border-radius: 4px;
+    border-radius: 5px;
     cursor: pointer;
     font-size: 1em;
     margin-right: 10px;
     transition: background-color 0.3s;
 }
 
-button:hover:not(:disabled) {
-    background-color: #0056b3;
-}
-
-button:disabled {
-    background-color: #a0a0a0;
-    cursor: not-allowed;
-}
-
-#send-data-button {
+#start-button, #submit-button, #send-data-button {
     background-color: #28a745;
+    color: white;
 }
 
-#send-data-button:hover:not(:disabled) {
+#start-button:hover, #submit-button:hover, #send-data-button:hover {
     background-color: #1e7e34;
 }
 
-#message-area {
-    font-weight: bold;
-    margin-top: 10px;
+.secondary-button {
+    background-color: #dc3545;
+    color: white;
 }
 
-hr {
-    border: 0;
-    height: 1px;
-    background: #ddd;
-    margin: 20px 0;
+.secondary-button:hover {
+    background-color: #c82333;
 }
-/* secondary-button の定義 */
-.secondary-button {
-    background-color: #f39c12; 
+
+button:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
 }
-.secondary-button:hover:not(:disabled) {
-    background-color: #e67e22; 
+
+.hint-area button {
+    background-color: #007bff;
+    color: white;
+    margin-top: 5px;
+}
+
+.hint-area button:hover {
+    background-color: #0056b3;
+}
+
+.hint-message {
+    color: #0056b3;
+    font-weight: bold;
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px solid #b8daff;
+    background-color: #e6f7ff;
+    border-radius: 4px;
+    white-space: pre-wrap; /* 改行を反映 */
+}
+
+/* 【修正：アコーディオンUIのCSS】 */
+.accordion-header {
+    background-color: #f8f9fa;
+    color: #333;
+    cursor: pointer;
+    padding: 10px;
+    width: 100%;
+    text-align: left;
+    border: 1px solid #dee2e6;
+    outline: none;
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 0;
+}
+
+.accordion-header:hover {
+    background-color: #e2e6ea;
+}
+
+.accordion-content {
+    padding: 15px;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    border-top: none;
+    overflow: hidden;
+    /* transitionで開閉を滑らかにする */
+    max-height: 0; 
+    transition: max-height 0.3s ease-out; 
+}
+
+.accordion-content.open {
+    /* JavaScriptでこのクラスを付与/削除する */
+    max-height: 500px; /* 十分な高さを設定 */
+    border-bottom: 1px solid #dee2e6;
+    margin-bottom: 20px;
+}
+
+.accordion-content ul {
+    margin-top: 5px;
+    padding-left: 20px;
 }
