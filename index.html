@@ -26,11 +26,24 @@
             <div class="accordion-content open">
                 <p style="font-weight: bold;">【重要】実験中は、ブラウザの再読み込み（リロード）を行わないでください。</p>
                 <p>この暗号は**ヴィジュネル暗号**です。解読の鍵と元の文章（平文）を入力してください。</p>
-                <p>暗号の基本原理は「鍵の文字に応じて、アルファベットを周期的に**ずらす**」ことです。<br>
+                <p>暗号の基本原理は「鍵の文字に応じて、アルファベットを周期的に**ずらす**」ことです。
                     <span style="color: #c0392b; font-weight: bold;">※ 鍵文字 'A' はシフト量「0」を意味し、文字をずらしません。'B' が1シフト、'Z' が25シフトとなります。</span>
                 </p>
+                <p style="font-weight: bold; margin-top: 10px;">🕒 タイマーについて (分割挑戦機能)</p>
+                <ul>
+                    <li>画面上の「一時停止/再開」ボタンで、**計測を中断・再開**できます。</li>
+                    <li>**【重要】一時停止を忘れた場合、その間の時間も計測時間に含まれます**ので、休憩に入る際は必ずボタンを押してください。</li>
+                </ul>
                 <p>インターネット検索（Google等）やメモ帳などの**外部ツールの利用は自由**ですが、その利用状況は記録されます。</p>
             </div>
+            
+            <hr>
+
+            <div style="text-align: center; margin: 20px 0;">
+                <p style="font-size: 1.2em;">経過時間: <span id="timer-display" style="font-weight: bold; color: #007bff;">0.00 秒</span></p>
+                <button id="pause-button" style="background-color: #f39c12; color: white; margin-top: 5px;">一時停止</button>
+            </div>
+            
             <hr>
 
             <h2>暗号文:</h2>
@@ -61,6 +74,102 @@
                     <li>特定した**鍵**を入力すると、平文全体が表示され、解読結果が正しいか**確実に確認できます**。</li>
                 </ul>
             </div>
+
+            <hr>
+            
+            <button class="accordion-header" id="reference-accordion-button" style="margin-top: 20px;">
+                🔑 シフト量と文字の対応表 (解読の補助資料)
+            </button>
+            <div class="accordion-content">
+                <style>
+                    .alphabet-table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        font-size: 0.9em;
+                        text-align: center;
+                    }
+                    .alphabet-table th, .alphabet-table td {
+                        border: 1px solid #ccc;
+                        padding: 4px;
+                        font-weight: bold;
+                    }
+                    .alphabet-table thead th {
+                        background-color: #34495e;
+                        color: white;
+                    }
+                    .highlight-e {
+                        background-color: #f1c40f; /* Eを目立たせる */
+                    }
+                </style>
+                <table class="alphabet-table">
+                    <thead>
+                        <tr>
+                            <th>文字</th>
+                            <th>A</th>
+                            <th>B</th>
+                            <th>C</th>
+                            <th>D</th>
+                            <th class="highlight-e">E</th>
+                            <th>F</th>
+                            <th>G</th>
+                            <th>H</th>
+                            <th>I</th>
+                            <th>J</th>
+                            <th>K</th>
+                            <th>L</th>
+                            <th>M</th>
+                            <th>N</th>
+                            <th>O</th>
+                            <th>P</th>
+                            <th>Q</th>
+                            <th>R</th>
+                            <th>S</th>
+                            <th>T</th>
+                            <th>U</th>
+                            <th>V</th>
+                            <th>W</th>
+                            <th>X</th>
+                            <th>Y</th>
+                            <th>Z</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>値</td>
+                            <td>0</td>
+                            <td>1</td>
+                            <td>2</td>
+                            <td>3</td>
+                            <td class="highlight-e">4</td>
+                            <td>5</td>
+                            <td>6</td>
+                            <td>7</td>
+                            <td>8</td>
+                            <td>9</td>
+                            <td>10</td>
+                            <td>11</td>
+                            <td>12</td>
+                            <td>13</td>
+                            <td>14</td>
+                            <td>15</td>
+                            <td>16</td>
+                            <td>17</td>
+                            <td>18</td>
+                            <td>19</td>
+                            <td>20</td>
+                            <td>21</td>
+                            <td>22</td>
+                            <td>23</td>
+                            <td>24</td>
+                            <td>25</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <hr>
+
+            <div id="decryption-interface">
+            
             <hr>
 
             <div id="decryption-interface">
@@ -81,6 +190,8 @@
         </section>
 
         <section id="survey-screen" style="display: none;">
+            <h2 id="final-message" style="color: #28a745; text-align: center; font-size: 2em; margin-bottom: 30px;"></h2>
+
             <h2>実験終了：アンケートとデータ送信</h2>
 
             <div class="survey-form">
@@ -89,8 +200,32 @@
                 <label><input type="radio" name="knowledge" value="NONE" checked> 全くない</label>
                 <label><input type="radio" name="knowledge" value="LITTLE"> 少しある（パズル程度）</label>
                 <label><input type="radio" name="knowledge" value="MUCH"> 詳しい知識がある</label>
+
+                <h3>2. 解読の難易度</h3>
+                <p>この暗号解読タスクは、全体としてどれくらい難しかったですか？</p>
+                <label><input type="radio" name="difficulty" value="1"> 1: 全く難しくなかった</label><br>
+                <label><input type="radio" name="difficulty" value="2"> 2: 少し簡単だった</label><br>
+                <label><input type="radio" name="difficulty" value="3" checked> 3: ちょうどよかった</label><br>
+                <label><input type="radio" name="difficulty" value="4"> 4: やや難しかった</label><br>
+                <label><input type="radio" name="difficulty" value="5"> 5: 非常に難しかった</label>
+
+                <h3>3. 頻度分析ツールの有用性</h3>
+                <p>頻度分析ツールは、解読プロセスにおいてどれくらい有用でしたか？</p>
+                <label><input type="radio" name="toolUtility" value="1"> 1: 全く役に立たなかった</label><br>
+                <label><input type="radio" name="toolUtility" value="2"> 2: あまり役に立たなかった</label><br>
+                <label><input type="radio" name="toolUtility" value="3" checked> 3: どちらとも言えない</label><br>
+                <label><input type="radio" name="toolUtility" value="4"> 4: 役に立った</label><br>
+                <label><input type="radio" name="toolUtility" value="5"> 5: 非常に役に立った</label>
+
+                <h3>4. 解読結果の確信度</h3>
+                <p>鍵と平文を提出した際、その結果が正しいとどれくらい確信していましたか？</p>
+                <label><input type="radio" name="confidence" value="1"> 1: 全く確信がなかった</label><br>
+                <label><input type="radio" name="confidence" value="2"> 2: あまり確信がなかった</label><br>
+                <label><input type="radio" name="confidence" value="3" checked> 3: どちらとも言えない</label><br>
+                <label><input type="radio" name="confidence" value="4"> 4: 確信があった</label><br>
+                <label><input type="radio" name="confidence" value="5"> 5: 非常に確信があった</label>
                 
-                <h3>2. 実験の楽しさ</h3>
+                <h3>5. 実験の楽しさ</h3>
                 <p>この暗号解読タスクは楽しめましたか？</p>
                 <label><input type="radio" name="enjoyment" value="LOW"> あまり楽しくなかった</label>
                 <label><input type="radio" name="enjoyment" value="MEDIUM"> どちらでもない</label>
@@ -101,6 +236,13 @@
             
             <button id="send-data-button">研究データを送信する</button>
             <p id="data-status" style="margin-top: 10px; font-weight: bold;"></p>
+            
+            <div id="personal-data-display" style="margin-top: 30px; padding: 15px; border: 1px dashed #ccc; background-color: #f9f9f9; display: none;">
+                <h3>あなたの実験結果：</h3>
+                <p id="time-spent"></p>
+                <p id="attempts-made"></p>
+                <p style="margin-top: 15px; font-weight: bold; color: #1e7e34;">ご協力ありがとうございました！あなたのデータは今後の研究に役立てられます。</p>
+            </div>
 
         </section>
     </main>
