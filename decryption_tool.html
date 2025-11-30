@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>暗号文 復号化ツール</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background-color: #f4f7f6; color: #333; }
+        main { max-width: 900px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        h1 { color: #0056b3; border-bottom: 3px solid #007bff; padding-bottom: 10px; margin-bottom: 20px; }
+        h2 { color: #333; margin-top: 30px; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
+        #ciphertext-display { font-size: 1.2em; font-weight: bold; color: #2c3e50; margin: 15px 0; background: #ecf0f1; border: 1px solid #ccc; padding: 15px; border-radius: 5px; word-break: break-all; letter-spacing: 1px; }
+        input[type="text"], button { padding: 8px; border-radius: 4px; border: 1px solid #ccc; }
+        button { background-color: #007bff; color: white; cursor: pointer; border: none; }
+        button:hover { background-color: #0056b3; }
+    </style>
+</head>
+<body>
+
+    <main>
+        <h1>🔓 ヴィジュネル暗号 復号化ツール</h1>
+
+        <h2>対象暗号文:</h2>
+        <div id="ciphertext-display">暗号文を読み込み中...</div>
+        
+        <hr>
+
+        <h2>🔑 鍵と復号</h2>
+        <p>特定した鍵を入力して、元の文章（平文）を確認してください。</p>
+        <div>
+            <label for="decryption-key-input">特定した鍵:</label>
+            <input type="text" id="decryption-key-input" style="padding: 5px; width: 150px;" placeholder="例: CIPHER" oninput="this.value = this.value.toUpperCase().replace(/[^A-Z]/g, '')">
+            <button onclick="decryptCiphertext()">復号開始</button>
+        </div>
+        
+        <h3 style="margin-top: 20px;">復号結果（平文）:</h3>
+        <div id="decrypted-plaintext-display" style="border: 1px dashed #007bff; padding: 15px; background: #e6f7ff; min-height: 50px; font-size: 1.1em; word-break: break-all;">
+            </div>
+
+    </main>
+    <script src="decryption_tool_script.js"></script>
+</body>
+</html>
