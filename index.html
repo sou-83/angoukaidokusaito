@@ -12,34 +12,55 @@
         <h1>ヴィジュネル暗号解読実験</h1>
 
         <section id="start-screen">
-            
-            <h2>実験のルールと心構え</h2>
-            <div style="background: #eef; border: 1px solid #ccd; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
-                <p>この実験では、暗号化された文章を解読していただきます。</p>
-                <p><strong>[暗号の基本]</strong>: 文章は、アルファベットを一定のルールで「ずらす」ことによって暗号化されています。</p>
-                <p><strong>[暗号の種類]</strong>: この暗号は**ヴィジュネル暗号**です。短い「鍵」を使って、文字をずらす量が周期的に変化します。</p>
-                <p>これは知識のテストではなく、**ロジックとパズル**です。解読に必要な鍵と元の文章（平文）をフォームに入力してください。</p>
-                <p style="font-weight: bold; color: red;">ヒントとツールは利用できますが、その使用は記録されます。</p>
-            </div>
+            <h2>実験参加へようこそ</h2>
+            <p>この実験は、暗号解読プロセスにおける人間の行動パターンを調査するものです。</p>
+            <p>準備ができたら、以下のボタンを押して開始してください。開始するとタイマーが作動します。</p>
             <button id="start-button">実験を開始する</button>
         </section>
 
         <section id="experiment-screen" style="display: none;">
+            
+            <button class="accordion-header" id="rule-accordion-button">
+                実験のルールと心構え (クリックで開閉) ⚠️ 実験中はリロードしないでください
+            </button>
+            <div class="accordion-content open">
+                <p style="font-weight: bold;">【重要】実験中は、ブラウザの再読み込み（リロード）を行わないでください。</p>
+                <p>この暗号は**ヴィジュネル暗号**です。解読の鍵と元の文章（平文）を入力してください。</p>
+                <p>暗号の基本原理は「鍵の文字に応じて、アルファベットを周期的に**ずらす**」ことです。<br>
+                    <span style="color: #c0392b; font-weight: bold;">※ 鍵文字 'A' はシフト量「0」を意味し、文字をずらしません。'B' が1シフト、'Z' が25シフトとなります。</span>
+                </p>
+                <p>インターネット検索（Google等）やメモ帳などの**外部ツールの利用は自由**ですが、その利用状況は記録されます。</p>
+            </div>
+            <hr>
 
             <h2>暗号文:</h2>
             <div id="ciphertext-display">暗号文を生成中...</div>
 
             <div class="hint-area" style="margin-top: 20px; margin-bottom: 20px;">
-                <button id="hint-button-1">ヒント 1 (暗号の種類)</button>
-                <button id="hint-button-2" style="display: none;">ヒント 2 (解読手順)</button>
+                <button id="hint-button-1">💡 ヒント 1 (解読の第一歩)</button>
+                <button id="hint-button-2" style="display: none;">💡 ヒント 2 (解読の具体的な手順)</button>
                 
                 <button id="frequency-tool-button">📊 頻度分析ツール</button>
                 <button id="decryption-tool-button">🔓 復号化ツール</button>
             </div>
             
-            <p id="hint-display-1" style="color: #0056b3; font-weight: bold; display: none;"></p>
-            <p id="hint-display-2" style="color: #0056b3; font-weight: bold; display: none;"></p>
+            <p id="hint-display-1" class="hint-message" style="display: none;"></p>
+            <p id="hint-display-2" class="hint-message" style="display: none;"></p>
             
+            <button class="accordion-header" id="tool-guide-accordion-button" style="margin-top: 20px;">
+                ツールの使い方ガイド (クリックで開閉)
+            </button>
+            <div class="accordion-content">
+                <h3>📊 頻度分析ツール</h3>
+                <ul>
+                    <li>**Kasiskiヒント:** 暗号文の繰り返し間隔から**鍵の長さの候補**を推測できます。間隔の**約数**に注目してください。</li>
+                    <li>**鍵長で分析:** 推測した鍵長を入力すると、暗号文が分割され、鍵文字ごとの頻度グラフが表示されます。</li>
+                </ul>
+                <h3>🔓 復号化ツール</h3>
+                <ul>
+                    <li>特定した**鍵**を入力すると、平文全体が表示され、解読結果が正しいか**確実に確認できます**。</li>
+                </ul>
+            </div>
             <hr>
 
             <div id="decryption-interface">
