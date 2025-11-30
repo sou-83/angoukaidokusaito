@@ -1,4 +1,4 @@
-// decryption_tool_script.js
+// decryption_tool_script.js - 復号化ツール専用スクリプト (2025/12/01)
 
 // --- 復号化機能 ---
 
@@ -80,6 +80,4 @@ window.onload = function() {
     } else {
         ciphertextDisplay.textContent = "暗号文が見つかりませんでした。メイン画面から開いてください。";
     }
-    
-    // 復号ツールは、暗号文が見つかった場合、キー入力時に自動で大文字に整形されるようになっている
 };
